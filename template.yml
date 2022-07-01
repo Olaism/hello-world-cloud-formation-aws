@@ -3,10 +3,10 @@ Description: ND9991 C3 L4
 Parameters:
   InstanceTypeParameter:
     Type: String
-    Default: t3.micro
+    Default: t2.micro
     AllowedValues:
       - t2.micro
-      - t1.micro
+      - t2.small
     Description: Enter either of t2.micro or t1.micro. Default is t2.micro
   ImageID:
     Description: Image id for the created ec2 instance
