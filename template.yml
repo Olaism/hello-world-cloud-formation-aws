@@ -1,0 +1,34 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: ND9991 C3 L4
+Parameters:
+  InstanceTypeParameter:
+    Type: String
+    Default: t3.micro
+    AllowedValues:
+      - t2.micro
+      - t1.micro
+    Description: Enter either of t2.micro or t1.micro. Default is t2.micro
+  ImageID:
+    Description: Image id for the created ec2 instance
+    Type: String
+    Default: 'ami-052efd3df9dad4825'
+    
+Resources:
+  EC2Instance:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      SecurityGroups:
+        - !Ref InstanceSecurityGroup
+      KeyName: udacity-ci-cd
+      ImageId: !Ref ImageID
+      InstanceType:
+        Ref: InstanceTypeParameter
+  InstanceSecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: Enable SSH access via port 22
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: '22'
+          ToPort: '22'
+          CidrIp: 0.0.0.0/0
