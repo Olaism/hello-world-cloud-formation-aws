@@ -8,20 +8,35 @@ jobs:
     steps:
       - checkout
       - run: echo "hello world"
-  create_infrastructure:
+  # create_infrastructure:
+  #   docker:
+  #     - image: amazon/aws-cli
+  #   steps:
+  #     - checkout
+  #     - run:
+  #         name: Create Cloudformation Stack
+  #         command: |
+  #           aws cloudformation deploy \
+  #           --template-file template.yml \
+  #           --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} \
+  #           --region us-east-1
+  configure_infrastructure:
     docker:
-      - image: amazon/aws-cli
+      - image: python:3.7-alpine3.11
     steps:
       - checkout
+      - add_ssh_keys:
+          fingerprint: [""]
       - run:
-          name: Create Cloudformation Stack
+          name: Install dependencies
           command: |
-            aws cloudformation deploy \
-            --template-file template.yml \
-            --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} \
-            --region us-east-1
+            apk add --update ansible
+      - run:
+          name: Run playbook and configure server
+          command: |
+            ansible-playbook -i inventory.txt main.yml
 workflows:
   doJobs:
     jobs:
       - build
-      - create_infrastructure
+      - configure_infrastructure
